@@ -1,0 +1,39 @@
+<br><div id="gmap" map-lazy-load="https://maps.google.com/maps/api/js" ng-controller="SampleCtrl"><ng-map zoom="13" center="51.49913951, -0.168397129"><custom-marker ng-bind="messages" position="{{messages[messages.length-1].KC5.position}}"><div class="marker-{{messages[messages.length-1].KC5.predictedJam}}">KC5</div></custom-marker><custom-marker ng-bind="messages" position="{{messages[messages.length-1].KC4.position}}"><div class="marker-{{messages[messages.length-1].KC4.predictedJam}}">KC4</div></custom-marker><custom-marker ng-bind="messages" position="{{messages[messages.length-1].KC3.position}}"><div class="marker-{{messages[messages.length-1].KC3.predictedJam}}">KC3</div></custom-marker><shape name="polyline" id="foo" path="[[{{messages[messages.length-1].KC5.position}}], [{{messages[messages.length-1].KC5.redirectpos}}]]" icons="[{
+          icon: {
+            path: 'FORWARD_CLOSED_ARROW'
+          },
+          offset: '100%'
+        }]"></shape><shape name="polyline" id="foo" path="[[{{messages[messages.length-1].KC4.position}}], [{{messages[messages.length-1].KC4.redirectpos}}]]" icons="[{
+          icon: {
+            path: 'FORWARD_CLOSED_ARROW'
+          },
+          offset: '100%'
+        }]"></shape><shape name="polyline" id="foo" path="[[{{messages[messages.length-1].KC3.position}}], [{{messages[messages.length-1].KC3.redirectpos}}]]" icons="[{
+          icon: {
+            path: 'FORWARD_CLOSED_ARROW'
+          },
+          offset: '100%'
+        }]"></shape></ng-map></div><table id="table" class="table table-striped" ng-controller="SampleCtrl"><thead><tr><th>Location<th>NO2<th>Jam Prediction<th>Confidence<th>Reroute to:<th>Date<tbody><tr><td>KC{{messages[messages.length-1].KC5.locNum}}<td>{{ messages[messages.length-1].KC5.NO2 }}<td>{{ messages[messages.length-1].KC5.predictedJam }}<td>{{ messages[messages.length-1].KC5.confidence }}<td>{{ messages[messages.length-1].KC5.reroute }}<td>{{ messages[messages.length-1].KC5.date }}<tr><td>KC{{messages[messages.length-1].KC4.locNum}}<td>{{ messages[messages.length-1].KC4.NO2 }}<td>{{ messages[messages.length-1].KC4.predictedJam }}<td>{{ messages[messages.length-1].KC4.confidence }}<td>{{ messages[messages.length-1].KC4.reroute }}<td>{{ messages[messages.length-1].KC4.date }}<tr><td>KC{{messages[messages.length-1].KC3.locNum}}<td>{{ messages[messages.length-1].KC3.NO2 }}<td>{{ messages[messages.length-1].KC3.predictedJam }}<td>{{ messages[messages.length-1].KC3.confidence }}<td>{{ messages[messages.length-1].KC3.reroute }}<td>{{ messages[messages.length-1].KC3.date }}</table><div style="width:75%"><canvas class="graph" id="readings" width="600" height="400"></canvas></div><script>var ref = new Firebase("https://traffair.firebaseio.com/data");
+    ref.limitToLast(1).on("child_added", function(snapshot, prevChildKey) {
+      var predictiondata = snapshot.val();
+      var readings = document.getElementById("readings");
+        var ctx = readings.getContext("2d");
+        var data = {
+            labels : ["KC5","KC4","KC3"],
+            datasets : [
+                {
+                    fillColor : "rgba(0,0,0,0.9)",
+                    strokeColor : "#000",
+                    pointColor : "#000",
+                    pointStrokeColor : "#000",
+                    data : [predictiondata.KC5.NO2,predictiondata.KC4.NO2,predictiondata.KC3.NO2]
+                }
+            ]
+        }
+        var myNewChart = new Chart(ctx , {
+            type: "bar",
+            data: data,
+        });
+        }, function (errorObject) {
+          console.log("The read failed: " + errorObject.code);
+        });</script>
